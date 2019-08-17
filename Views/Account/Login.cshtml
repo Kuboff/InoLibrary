@@ -1,0 +1,33 @@
+﻿@model InoLibrary.ViewModels.LoginViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <h2>Вход в приложение</h2>
+    <form method="post" asp-controller="Account" asp-action="Login"
+          asp-route-returnUrl="@Model.ReturnUrl">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <label asp-for="Email" class="control-label"></label><br />
+            <input asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div>
+            <label asp-for="Password" class="control-label"></label><br />
+            <input asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div>
+            <label asp-for="RememberMe" class="control-label"></label><br />
+            <input asp-for="RememberMe" />
+        </div>
+        <div>
+            <input type="submit" value="Войти" class="btn btn-sm btn-primary"/>
+        </div>
+    </form>
+    <a asp-action="Register" asp-controller="Account" class="btn btn-sm btn-primary">Регистрация</a>
+</body>
+</html>

@@ -1,0 +1,46 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<InoLibrary.Models.Publication>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>Index</title>
+</head>
+<body>
+    <table class="table">
+        <tbody>
+            @foreach (var publication in ViewBag.Publications)
+            {
+                <tr>
+                    <td>
+                        @publication.Name
+                    </td>
+                    <td>
+                        @publication.PublishingYear
+                    </td>
+                    <td>
+                        @publication.User.Name
+                    </td>
+                    <td>
+                        @foreach (var cat in ViewBag.PublicationCategories)
+                        {
+                            @if (cat.PublicationId == publication.Id)
+                            {
+                                <text>@cat.Category.Name, </text>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-action="Profile" asp-controller="Users">Профиль пользователя</a>
+</body>
+</html>

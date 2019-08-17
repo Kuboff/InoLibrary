@@ -1,0 +1,42 @@
+﻿@model InoLibrary.ViewModels.ProfileViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>Profile</title>
+</head>
+<body>
+
+    <div>
+        <h4>ProfileViewModel</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                <label asp-for="FullName" class="control-label">ФИО</label>
+            </dt>
+            <dd>
+                <span class="text-center">@Model.FullName</span>
+            </dd>
+            <dt>
+                <label asp-for="Email" class="control-label">Email</label>
+            </dt>
+            <dd>
+                <span class="text-center">@Model.Email</span>
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-controller="Users" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Изменить</a>
+        <a asp-action="ChangePassword" asp-controller="Users" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Сменить пароль</a>
+        <a asp-action="LogOff" asp-controller="Account" class="btn btn-sm btn-warning">Выйти</a>
+    </div>
+</body>
+</html>
