@@ -7,9 +7,10 @@ namespace InoLibrary.Models
 {
     public class Publication
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public DateTime PublishingYear { get; set; }
+        public string Annotation { get; set; }
+        public int PublishingYear { get; set; }
         public string Path { get; set; }
         public User User { get; set; }
         public List<PublicationCategory> PublicationCategories { get; set; }

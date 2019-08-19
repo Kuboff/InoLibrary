@@ -18,12 +18,16 @@ namespace InoLibrary.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Profile(ProfileViewModel model)
+        public async Task<IActionResult> Profile()
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            model.Email = user.Email;
-            model.FullName = user.FullName;
-            model.Id = user.Id;
+            ProfileViewModel model = new ProfileViewModel
+            {
+                Email = user.Email,
+                FullName = user.FullName,
+                Id = user.Id,
+                Nickname = user.Nickname
+            };
             return View(model);
         }
         [HttpGet]
@@ -92,30 +96,35 @@ namespace InoLibrary.Controllers
                 User user = await _userManager.FindByIdAsync(model.Id);
                 if (user != null)
                 {
-                    //PasswordValidator<User> passwordValidator = HttpContext.RequestServices.GetService(typeof(PasswordValidator<User>)) as PasswordValidator<User>;
-                    //PasswordHasher<User> passwordHasher = HttpContext.RequestServices.GetService(typeof(PasswordHasher<User>)) as PasswordHasher<User>;
-                    PasswordValidator<User> passwordValidator = new PasswordValidator<User>();
-                    PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
-                    if (await _userManager.CheckPasswordAsync(user, model.OldPassword))
+                    if (model.OldPassword == model.NewPassword)
                     {
-                        IdentityResult result = await passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
-                        if (result.Succeeded)
+                        PasswordValidator<User> passwordValidator = new PasswordValidator<User>();
+                        PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
+                        if (await _userManager.CheckPasswordAsync(user, model.OldPassword))
                         {
-                            user.PasswordHash = passwordHasher.HashPassword(user, model.NewPassword);
-                            await _userManager.UpdateAsync(user);
-                            return RedirectToAction("Profile", "Users");
+                            IdentityResult result = await passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
+                            if (result.Succeeded)
+                            {
+                                user.PasswordHash = passwordHasher.HashPassword(user, model.NewPassword);
+                                await _userManager.UpdateAsync(user);
+                                return RedirectToAction("Profile", "Users");
+                            }
+                            else
+                            {
+                                foreach (var error in result.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                            }
                         }
                         else
                         {
-                            foreach (var error in result.Errors)
-                            {
-                                ModelState.AddModelError(string.Empty, error.Description);
-                            }
+                            ModelState.AddModelError("OldPassword", "Старый пароль введён неверно");
                         }
                     }
                     else
                     {
-                        ModelState.AddModelError("OldPassword", "Старый пароль введён неверно");
+                        ModelState.AddModelError(string.Empty, "Новые пароли не совпадают");
                     }
                 }
                 else

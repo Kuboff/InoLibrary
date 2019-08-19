@@ -1,8 +1,7 @@
 ﻿@model InoLibrary.ViewModels.ProfileViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
 @{
-    Layout = null;
+    Layout = "_layout";
 }
 
 <!DOCTYPE html>
@@ -31,12 +30,17 @@
             <dd>
                 <span class="text-center">@Model.Email</span>
             </dd>
+            <dt>
+                <label asp-for="Nickname" class="control-label">Email</label>
+            </dt>
+            <dd>
+                <span class="text-center">@Model.Nickname</span>
+            </dd>
         </dl>
     </div>
     <div>
         <a asp-action="Edit" asp-controller="Users" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Изменить</a>
         <a asp-action="ChangePassword" asp-controller="Users" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Сменить пароль</a>
-        <a asp-action="LogOff" asp-controller="Account" class="btn btn-sm btn-warning">Выйти</a>
     </div>
 </body>
 </html>

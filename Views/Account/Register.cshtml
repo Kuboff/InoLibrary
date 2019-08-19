@@ -3,35 +3,49 @@
 
 <html>
 <head>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"
+            asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.validator">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
+            asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive">
+    </script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <h2>Регистрация нового пользователя</h2>
     <form method="post" asp-controller="Account" asp-action="Register">
-        <div asp-validation-summary="ModelOnly"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div>
             <label asp-for="FullName" class="control-label"></label><br />
             <input asp-for="FullName" />
-            <span asp-validation-for="FullName"></span>
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Nickname" class="control-label"></label><br />
+            <input asp-for="Nickname" />
+            <span asp-validation-for="Nickname" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="Email" class="control-label"></label><br />
             <input asp-for="Email" />
-            <span asp-validation-for="Email"></span>
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="Password" class="control-label"></label><br />
             <input asp-for="Password" />
-            <span asp-validation-for="Password"></span>
+            <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="PasswordConfirm" class="control-label"></label><br />
             <input asp-for="PasswordConfirm" />
-            <span asp-validation-for="PasswordConfirm"></span>
+            <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
         </div>
         <div>
-            <input type="submit" value="Регистрация" class="btn btn-sm btn-primary"/>
+            <input type="submit" value="Регистрация" class="btn btn-sm btn-primary" />
         </div>
     </form>
 </body>
 </html>
+

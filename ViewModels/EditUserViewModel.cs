@@ -13,6 +13,7 @@ namespace InoLibrary.ViewModels
 
         [EmailAddress(ErrorMessage = "Неверный формат")]
         [Required(ErrorMessage = "Не указан Email")]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [DataType(DataType.Password)]

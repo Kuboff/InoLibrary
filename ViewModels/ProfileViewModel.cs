@@ -9,13 +9,15 @@ namespace InoLibrary.ViewModels
 {
     public class ProfileViewModel
     {
-        [Required]
         public string Id { get; set; }
-        [Required(ErrorMessage = "Не указаны ФИО")]
+
+        [Display(Name ="ФИО")]
         public string FullName { get; set; }
 
-        [EmailAddress(ErrorMessage = "Неверный формат")]
-        [Required(ErrorMessage = "Не указан Email")]
+        [Display(Name ="Email")]
         public string Email { get; set; }
+
+        [Display(Name ="Ник")]
+        public string Nickname { get; set; }
     }
 }

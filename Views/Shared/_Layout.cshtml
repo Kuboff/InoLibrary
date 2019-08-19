@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -12,7 +14,11 @@
         <div class="container">
             <div>
                 <ul class="nav navbar-nav">
-                    <li><a href="~/Home/Index" class="navbar-brand">Главная</a></li>
+                    <li><a asp-action="Index" asp-controller="Home" class="navbar-brand">Каталог публикаций</a></li>
+                    <li><a asp-action="MyPublications" asp-controller="Publications" class="navbar-brand">Мои публикации</a></li>
+                    <li><a asp-action="CreatePublication" asp-controller="Publications" class="navbar-brand">Создать карточку</a></li>
+                    <li><a asp-action="Profile" asp-controller="Users" class="navbar-brand">Профиль</a></li>
+                    <li><a asp-action="LogOff" asp-controller="Account" class="navbar-brand btn-warning">Выйти</a></li>
                 </ul>
             </div>
         </div>

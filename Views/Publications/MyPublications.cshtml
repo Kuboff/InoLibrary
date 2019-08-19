@@ -1,0 +1,53 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<InoLibrary.Models.Publication>
+
+@{
+    Layout = "_layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>Index</title>
+</head>
+<body>
+    @if (Model != null)
+    {
+    <table class="table">
+        <tbody>
+            @foreach (var publication in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="ObservePublication" asp-controller="Publications" asp-route-id=@publication.Id>@publication.Name</a>
+                    </td>
+                    <td>
+                        @publication.PublishingYear
+                    </td>
+                    <td>
+                        @publication.User.Nickname
+                    </td>
+                    <td>
+                        @foreach (var cat in publication.PublicationCategories)
+                        {
+                            <text>@cat.Category.Name, </text>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="DeletePublication" asp-controller="Publications" asp-route-id="@publication.Id" class="btn btn-sm btn-danger">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    }
+    else
+    {
+        <div class="info">У вас ещё нет ни одной публикации</div>
+    }
+</body>
+</html>
+

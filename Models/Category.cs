@@ -7,7 +7,7 @@ namespace InoLibrary.Models
 {
     public class Category
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public List<PublicationCategory> PublicationCategories { get; set; }
         public Category()

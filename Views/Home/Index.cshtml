@@ -2,7 +2,7 @@
 @model IEnumerable<InoLibrary.Models.Publication>
 
 @{
-    Layout = null;
+    Layout = "_layout";
 }
 
 <!DOCTYPE html>
@@ -14,9 +14,29 @@
     <title>Index</title>
 </head>
 <body>
+
+    <form method="post" asp-controller="Home" asp-action="Search">
+        <div class="form-group">
+            @Html.DropDownList("searchOption", new SelectList(new string[] { "Название", "Автор", "Год издания" }))
+            <input name="searchString" class="form-control" />
+            <input type="submit" value="Найти" class="btn btn-sm btn-primary" />
+        </div>
+    </form>
+    <form method="post" asp-controller="Home" asp-action="Search">
+        <input type="hidden" name="searchOption" value="Category" />
+        <dl>
+            @foreach (var category in ViewBag.CategoryMenu)
+            {
+            <dt>
+                <input type="submit" name="searchString" value=@category.Name class="text-left"/>
+                @category.Amount
+            </dt>
+            }
+        </dl>
+    </form>
     <table class="table">
         <tbody>
-            @foreach (var publication in ViewBag.Publications)
+            @foreach (var publication in Model)
             {
                 <tr>
                     <td>
@@ -26,21 +46,22 @@
                         @publication.PublishingYear
                     </td>
                     <td>
-                        @publication.User.Name
+                        @publication.User.Nickname
                     </td>
                     <td>
-                        @foreach (var cat in ViewBag.PublicationCategories)
+                        @foreach (var cat in publication.PublicationCategories)
                         {
-                            @if (cat.PublicationId == publication.Id)
-                            {
-                                <text>@cat.Category.Name, </text>
-                            }
+                            <text>@cat.Category.Name, </text>
                         }
+                    </td>
+                    <td>
+                        <a asp-action="ObservePublication" asp-controller="Publications" asp-route-id=@publication.Id>Открыть</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
     <a asp-action="Profile" asp-controller="Users">Профиль пользователя</a>
+    <a asp-action="CreatePublication" asp-controller="Publications">Добавить публикацию</a>
 </body>
 </html>

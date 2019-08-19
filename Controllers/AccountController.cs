@@ -1,5 +1,4 @@
-﻿using InoLibrary.Interfaces;
-using InoLibrary.Models;
+﻿using InoLibrary.Models;
 using InoLibrary.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,21 +35,28 @@ namespace InoLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email, FullName = model.FullName};
-                // добавляем пользователя
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (model.Password == model.PasswordConfirm)
                 {
-                    // установка куки
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    User user = new User { Email = model.Email, UserName = model.Email, FullName = model.FullName, Nickname = model.Nickname };
+                    // добавляем пользователя
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        // установка куки
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("MyPublications", "Publications");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
                 }
                 else
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    ModelState.AddModelError(string.Empty, "Пароли не совпадают");
                 }
             }
             return View(model);
@@ -78,7 +84,7 @@ namespace InoLibrary.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("MyPublications", "Publications");
                     }
                 }
                 else

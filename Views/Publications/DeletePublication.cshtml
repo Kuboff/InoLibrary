@@ -1,0 +1,25 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>DeletePublication</title>
+</head>
+<body>
+    <form asp-action="DeletePublication" asp-controller="Publications" asp-route-id="@ViewBag.Id">
+        <div>
+            <text class="text-justify">Вы уверены?</text>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Удалить" class="btn btn-sm btn-danger" />
+        </div>
+    </form>
+
+</body>
+</html>

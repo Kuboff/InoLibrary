@@ -1,0 +1,68 @@
+﻿@model InoLibrary.ViewModels.EditPublicationViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"
+            asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.validator">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
+            asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive">
+    </script>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>EditPublication</title>
+</head>
+<body>
+
+    <h4>EditPublicationViewModel</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="EditPublication" asp-controller="Publications" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Annotation" class="control-label"></label>
+                    <input asp-for="Annotation" class="form-control" />
+                    <span asp-validation-for="Annotation" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublishingYear" class="control-label"></label>
+                    @Html.DropDownListFor(m => m.PublishingYear, new SelectList(ViewBag.PublishingYears))
+                    <span asp-validation-for="PublishingYear" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Categories" class="control-label"></label>
+                    @Html.ListBoxFor(m => m.Categories, new MultiSelectList(ViewBag.Categories))
+                    <span asp-validation-for="Categories" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="File" type="file" /><br>
+                    <input asp-for="OldFilePath" type="hidden" value="@Model.OldFilePath" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-sm btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+        <a asp-action="DeletePublication" asp-controller="Publications" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Удалить</a>
+    </div>
+
+</body>
+</html>

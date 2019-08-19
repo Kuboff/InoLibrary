@@ -10,8 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using InoLibrary.Models;
 using Microsoft.EntityFrameworkCore;
-using InoLibrary.Interfaces;
-using InoLibrary.Repos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace InoLibrary
@@ -34,9 +32,9 @@ namespace InoLibrary
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<InoLibraryDbContext>();
 
-            services.AddTransient<ICategories, CategoryRepo>();
-            services.AddTransient<IPublications, PublicationRepo>();
-            services.AddTransient<IUsers, UserRepo>();
+            //services.AddTransient<ICategories, CategoryRepo>();
+            //services.AddTransient<IPublications, PublicationRepo>();
+            //services.AddTransient<IUsers, UserRepo>();
             services.AddMvc();
         }
 
@@ -60,7 +58,7 @@ namespace InoLibrary
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Publications}/{action=MyPublications}/{id?}");
             });
         }
     }

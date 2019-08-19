@@ -12,14 +12,16 @@ namespace InoLibrary.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage ="Введите старый пароль")]
+        [Display(Name ="Старый пароль")]
         [DataType(DataType.Password)]
         public string OldPassword { get; set; }
 
         [Required(ErrorMessage = "Новый пароль не может быть пустым")]
+        [Display(Name = "Новый пароль")]
         [DataType(DataType.Password)]
         public string NewPassword { get; set; }
 
-        [Compare("NewPassword", ErrorMessage = "Пароли не совпадают")]
+        [Display(Name = "Повторите новый пароль")]
         [DataType(DataType.Password)]
         public string RepeatNewPassword { get; set; }
     }
