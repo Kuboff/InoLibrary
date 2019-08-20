@@ -16,7 +16,6 @@ namespace InoLibrary
     {
         public static void Main(string[] args)
         {
-            //CreateWebHostBuilder(args).Build().Run();
             var host = CreateWebHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
@@ -25,7 +24,7 @@ namespace InoLibrary
                 try
                 {
                     var context = services.GetRequiredService<InoLibraryDbContext>();
-                    InitialData.Initialize(context);
+                    CategoriesToDb.Initialize(context);
                 }
                 catch (Exception ex)
                 {

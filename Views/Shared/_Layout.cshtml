@@ -7,18 +7,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css" />
+    <style type="text/css">
+        #header{
+            height: 80px;
+            background: #001fb4;
+        }
+        #menuItem{
+            color: #cdcdcf;
+        }
+        ul.hr {
+            margin: 0;
+            padding: 4px;
+        }
+        ul.hr li {
+            color: #cdcdcf;
+            display: inline;
+            margin-right: 5px;
+            padding: 3px;
+        }
+            
+    </style>
 </head>
 <body>
     <!--меню-->
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-inverse" id="header">
         <div class="container">
             <div>
-                <ul class="nav navbar-nav">
-                    <li><a asp-action="Index" asp-controller="Home" class="navbar-brand">Каталог публикаций</a></li>
-                    <li><a asp-action="MyPublications" asp-controller="Publications" class="navbar-brand">Мои публикации</a></li>
-                    <li><a asp-action="CreatePublication" asp-controller="Publications" class="navbar-brand">Создать карточку</a></li>
-                    <li><a asp-action="Profile" asp-controller="Users" class="navbar-brand">Профиль</a></li>
-                    <li><a asp-action="LogOff" asp-controller="Account" class="navbar-brand btn-warning">Выйти</a></li>
+                <ul class="hr">
+                    <li><a id="menuItem" asp-action="Index" asp-controller="Home" class="navbar-brand">Каталог публикаций</a></li>
+                    <li><a id="menuItem" asp-action="MyPublications" asp-controller="Publications" class="navbar-brand">Мои публикации</a></li>
+                    <li><a id="menuItem" asp-action="CreatePublication" asp-controller="Publications" class="navbar-brand">Создать карточку</a></li>
+                    <li><a id="menuItem" asp-action="Profile" asp-controller="Users" class="navbar-brand">Профиль</a></li>
+                    <li><a id="menuItem" asp-action="LogOff" asp-controller="Account" class="navbar-brand">Выйти</a></li>
                 </ul>
             </div>
         </div>

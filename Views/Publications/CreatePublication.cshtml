@@ -8,21 +8,16 @@
 
 <html>
 <head>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"
-            asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.validator">
-    </script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
-            asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive">
-    </script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <meta name="viewport" content="width=device-width" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <title>CreatePublication</title>
 </head>
 <body>
 
-    <h4>CreatePublicationViewModel</h4>
+    <h4>Новая карточка</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -39,20 +34,20 @@
                     <span asp-validation-for="Annotation" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Categories" class="control-label"></label>
-                    @Html.ListBoxFor(m => m.Categories, new MultiSelectList(ViewBag.Categories))
-                    <span asp-validation-for="Categories" class="text-danger"></span>
+                    <label asp-for="PublishingYear" class="control-label"></label>
+                    @Html.DropDownListFor(m => m.PublishingYear, new MultiSelectList(ViewBag.PublishingYears))
+                    <span asp-validation-for="PublishingYear" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="PublishingYear" class="control-label"></label>
-                    @Html.DropDownListFor(m => m.PublishingYear, new SelectList(ViewBag.PublishingYears))
-                    <span asp-validation-for="PublishingYear" class="text-danger"></span>
+                    <label asp-for="Categories" margin-top=0px; class="control-label"></label>
+                    @Html.ListBoxFor(m => m.Categories, new MultiSelectList(ViewBag.Categories))
+                    <span asp-validation-for="Categories" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <input asp-for="File" type="file" /><br>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-sm btn-primary" />
+                    <input type="submit" value="Создать" class="btn btn-sm btn-primary" />
                 </div>
             </form>
         </div>

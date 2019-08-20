@@ -9,6 +9,8 @@ using InoLibrary.Models;
 
 namespace InoLibrary.Controllers
 {
+    //Отвечает за страницу "Каталог публикаций"
+    [Authorize]
     public class HomeController : Controller
     {
         InoLibraryDbContext _db;
@@ -18,10 +20,9 @@ namespace InoLibrary.Controllers
             _db = context;
         }
 
-
-        [Authorize]
         public async Task<IActionResult> Index()
         {
+            //Список Id публикаций, которые нужно отобразить
             var publicationsIds = TempData["PublicationsIds"] as string[];
 
             List<Publication> publications = new List<Publication>();
@@ -31,6 +32,10 @@ namespace InoLibrary.Controllers
                 {
                     publications.Add(await _db.Publications.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == publicationsIds[i]));
                 }
+            }
+            else
+            {
+                publications.AddRange(_db.Publications.Include(p => p.User).ToList());
             }
 
             //Создание списка категорий с актуальным количеством публикаций для каждой
@@ -57,9 +62,13 @@ namespace InoLibrary.Controllers
                 }
             }
 
+            //Сортировка списка рубрик по алфавиту
+            categoryMenu.Sort(CompareWords);
+
             ViewBag.CategoryMenu = categoryMenu;
 
-            publications.Sort(CompareByYear);
+            //Сортировка публикаций по времени создания
+            publications.Sort(CompareByCreationTime);
 
             return View(publications);
         }
@@ -123,9 +132,14 @@ namespace InoLibrary.Controllers
             return publications;
         }
 
-        public int CompareByYear(Publication p1, Publication p2)
+        public int CompareByCreationTime(Publication p1, Publication p2)
         {
-            return p1.PublishingYear.CompareTo(p2.PublishingYear);
+            return p1.CreationTime.CompareTo(p2.CreationTime);
+        }
+
+        public int CompareWords(CategoryMenuElement c1, CategoryMenuElement c2)
+        {
+            return c1.Name.CompareTo(c2.Name);
         }
 
     }

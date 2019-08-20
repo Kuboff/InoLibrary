@@ -13,6 +13,7 @@ namespace InoLibrary.Models
         public int PublishingYear { get; set; }
         public string Path { get; set; }
         public User User { get; set; }
+        public DateTime CreationTime { get; set; }
         public List<PublicationCategory> PublicationCategories { get; set; }
         public Publication()
         {

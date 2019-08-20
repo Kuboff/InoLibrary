@@ -1,5 +1,6 @@
 ﻿using InoLibrary.Models;
 using InoLibrary.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace InoLibrary.Controllers
 {
+    //Отвечает за учётную запись пользователя
+    [Authorize]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;
@@ -18,6 +21,7 @@ namespace InoLibrary.Controllers
             _userManager = userManager;
         }
 
+        //Просмотр профиля
         public async Task<IActionResult> Profile()
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -30,6 +34,8 @@ namespace InoLibrary.Controllers
             };
             return View(model);
         }
+
+        //Изменение профиля
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -47,36 +53,43 @@ namespace InoLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
+                if (model != null)
                 {
-                    if (await _userManager.CheckPasswordAsync(user, model.Password))
+                    User user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
                     {
-                        user.Email = model.Email;
-                        user.UserName = model.Email;
-                        user.FullName = model.FullName;
-
-                        var result = await _userManager.UpdateAsync(user);
-                        if (result.Succeeded)
+                        if (await _userManager.CheckPasswordAsync(user, model.Password))
                         {
-                            return RedirectToAction("Profile", "Users");
+                            user.Email = model.Email;
+                            user.UserName = model.Email;
+                            user.FullName = model.FullName;
+
+                            var result = await _userManager.UpdateAsync(user);
+                            if (result.Succeeded)
+                            {
+                                return RedirectToAction("Profile", "Users");
+                            }
+                            else
+                            {
+                                foreach (var error in result.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                            }
                         }
                         else
                         {
-                            foreach (var error in result.Errors)
-                            {
-                                ModelState.AddModelError(string.Empty, error.Description);
-                            }
+                            ModelState.AddModelError("Password", "Пароль неверный");
                         }
                     }
-                    else
-                    {
-                        ModelState.AddModelError("Password", "Пароль неверный");
-                    }
                 }
+                return NotFound();
             }
             return View(model);
         }
+
+        //Смена пароля
+        [HttpGet]
         public async Task<IActionResult> ChangePassword(string id)
         {
             User user = await _userManager.FindByIdAsync(id);
@@ -93,10 +106,10 @@ namespace InoLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userManager.FindByIdAsync(model.Id);
-                if (user != null)
+                if (model != null)
                 {
-                    if (model.OldPassword == model.NewPassword)
+                    User user = await _userManager.FindByIdAsync(model.Id);
+                    if (user != null)
                     {
                         PasswordValidator<User> passwordValidator = new PasswordValidator<User>();
                         PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
@@ -124,12 +137,12 @@ namespace InoLibrary.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Новые пароли не совпадают");
+                        ModelState.AddModelError(string.Empty, "Пользователь не найден");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Пользователь не найден");
+                    return NotFound();
                 }
             }
             return View(model);

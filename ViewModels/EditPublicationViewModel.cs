@@ -26,8 +26,7 @@ namespace InoLibrary.ViewModels
         [Display(Name = "Выберите рубрики")]
         public List<string> Categories { get; set; }
 
-        [Required(ErrorMessage = "Выберите файл")]
-        public IFormFile File { get; set; }
+        public IFormFile File{ get; set; }
 
         public string OldFilePath { get; set; }
     }

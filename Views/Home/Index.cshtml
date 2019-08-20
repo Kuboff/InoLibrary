@@ -12,56 +12,72 @@
     <meta name="viewport" content="width=device-width" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <title>Index</title>
+    <style>
+        #categories {
+            position: absolute;
+            width: 150px;
+            left: 405px;
+            top: 110px;
+        }
+        #publications {
+            position: relative;
+            width: 800px;
+            left: 150px;
+            top: 0px;
+        }
+    </style>
 </head>
 <body>
-
     <form method="post" asp-controller="Home" asp-action="Search">
         <div class="form-group">
             @Html.DropDownList("searchOption", new SelectList(new string[] { "Название", "Автор", "Год издания" }))
-            <input name="searchString" class="form-control" />
+            <input name="searchString" class="input-sm" width="100" />
             <input type="submit" value="Найти" class="btn btn-sm btn-primary" />
         </div>
     </form>
-    <form method="post" asp-controller="Home" asp-action="Search">
-        <input type="hidden" name="searchOption" value="Category" />
-        <dl>
-            @foreach (var category in ViewBag.CategoryMenu)
-            {
-            <dt>
-                <input type="submit" name="searchString" value=@category.Name class="text-left"/>
-                @category.Amount
-            </dt>
-            }
-        </dl>
-    </form>
-    <table class="table">
-        <tbody>
-            @foreach (var publication in Model)
-            {
-                <tr>
-                    <td>
-                        @publication.Name
-                    </td>
-                    <td>
-                        @publication.PublishingYear
-                    </td>
-                    <td>
-                        @publication.User.Nickname
-                    </td>
-                    <td>
-                        @foreach (var cat in publication.PublicationCategories)
-                        {
-                            <text>@cat.Category.Name, </text>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="ObservePublication" asp-controller="Publications" asp-route-id=@publication.Id>Открыть</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <a asp-action="Profile" asp-controller="Users">Профиль пользователя</a>
-    <a asp-action="CreatePublication" asp-controller="Publications">Добавить публикацию</a>
+    <div id="categories">
+        @foreach (var category in ViewBag.CategoryMenu)
+        {
+            <a asp-controller="Home" asp-action="Search" asp-route-searchOption="Category" asp-route-searchString=@category.Name class="text-primary">@category.Name (@category.Amount)</a><br />
+        }
+    </div>
+    @if (Model.Count() != 0)
+    {
+        <table class="table" id="publications">
+            <tbody>
+                @foreach (var publication in Model)
+                {
+                    <tr>
+                        <td>
+                            @publication.Name
+                        </td>
+                        <td>
+                            @publication.PublishingYear
+                        </td>
+                        <td>
+                            @publication.User.Nickname
+                        </td>
+                        <td>
+                            @for (int i = 0; i < publication.PublicationCategories.Count; i++)
+                            {
+                                <text> @publication.PublicationCategories[i].Category.Name</text>
+                                if (i != publication.PublicationCategories.Count - 1)
+                                {
+                                    <text>,</text>
+                                }
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" asp-action="ObservePublication" asp-controller="Publications" asp-route-id=@publication.Id>Открыть</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="info">Публикаций не найдено</div>
+    }
 </body>
 </html>

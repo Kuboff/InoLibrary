@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace InoLibrary.Controllers
 {
+    //Отвечает за регистрацию и аутентификацию, а также за выход из аккаунта
     public class AccountController : Controller
     {
         private InoLibraryDbContext _db;
@@ -25,6 +26,7 @@ namespace InoLibrary.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -35,14 +37,12 @@ namespace InoLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.Password == model.PasswordConfirm)
+                if (model != null)
                 {
                     User user = new User { Email = model.Email, UserName = model.Email, FullName = model.FullName, Nickname = model.Nickname };
-                    // добавляем пользователя
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        // установка куки
                         await _signInManager.SignInAsync(user, false);
                         return RedirectToAction("MyPublications", "Publications");
                     }
@@ -54,10 +54,7 @@ namespace InoLibrary.Controllers
                         }
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Пароли не совпадают");
-                }
+                return NotFound();
             }
             return View(model);
         }
@@ -73,23 +70,26 @@ namespace InoLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
+                if (model != null)
                 {
-                    // проверяем, принадлежит ли URL приложению
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    var result =
+                        await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                    if (result.Succeeded)
                     {
-                        return Redirect(model.ReturnUrl);
+                        // проверяем, принадлежит ли URL приложению
+                        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("MyPublications", "Publications");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("MyPublications", "Publications");
+                        ModelState.AddModelError("", "Неправильный логин и (или) пароль");
                     }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Неправильный логин и (или) пароль");
                 }
             }
             return View(model);

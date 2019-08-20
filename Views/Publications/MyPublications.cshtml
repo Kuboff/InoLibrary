@@ -16,30 +16,32 @@
 <body>
     @if (Model != null)
     {
+    <h2>Мои публикации</h2>
     <table class="table">
         <tbody>
             @foreach (var publication in Model)
             {
-                <tr>
-                    <td>
-                        <a asp-action="ObservePublication" asp-controller="Publications" asp-route-id=@publication.Id>@publication.Name</a>
-                    </td>
-                    <td>
-                        @publication.PublishingYear
-                    </td>
-                    <td>
-                        @publication.User.Nickname
-                    </td>
-                    <td>
-                        @foreach (var cat in publication.PublicationCategories)
-                        {
-                            <text>@cat.Category.Name, </text>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="DeletePublication" asp-controller="Publications" asp-route-id="@publication.Id" class="btn btn-sm btn-danger">Удалить</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <a asp-action="ObservePublication" asp-controller="Publications" asp-route-id=@publication.Id>@publication.Name</a>
+                </td>
+                <td>
+                    @publication.PublishingYear
+                </td>
+                <td>
+                    @publication.User.Nickname
+                </td>
+                <td>
+                    @foreach (var cat in publication.PublicationCategories)
+                    {
+                        <text>@cat.Category.Name, </text>
+                    }
+                </td>
+                <td>
+                    <a asp-action="ObservePublication" asp-controller="Publications" asp-route-id="@publication.Id" class="btn btn-sm btn-primary">Открыть</a>
+                    <a asp-action="DeletePublication" asp-controller="Publications" asp-route-id="@publication.Id" class="btn btn-sm btn-danger">Удалить</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

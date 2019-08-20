@@ -8,21 +8,16 @@
 
 <html>
 <head>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"
-            asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.validator">
-    </script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
-            asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive">
-    </script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <meta name="viewport" content="width=device-width" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <title>EditPublication</title>
 </head>
 <body>
 
-    <h4>EditPublicationViewModel</h4>
+    <h4>Редактор карточки</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -50,17 +45,17 @@
                 </div>
                 <div class="form-group">
                     <input asp-for="File" type="file" /><br>
+                    <text style="font-weight:700">Сейчас загружен: @System.IO.Path.GetFileName(Model.OldFilePath)</text>
                     <input asp-for="OldFilePath" type="hidden" value="@Model.OldFilePath" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-sm btn-primary" />
+                    <input type="submit" value="Сохранить" class="btn btn-sm btn-primary" />
                 </div>
             </form>
         </div>
     </div>
 
     <div>
-        <a asp-action="Index">Back to List</a>
         <a asp-action="DeletePublication" asp-controller="Publications" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Удалить</a>
     </div>
 

@@ -32,9 +32,6 @@ namespace InoLibrary
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<InoLibraryDbContext>();
 
-            //services.AddTransient<ICategories, CategoryRepo>();
-            //services.AddTransient<IPublications, PublicationRepo>();
-            //services.AddTransient<IUsers, UserRepo>();
             services.AddMvc();
         }
 
@@ -54,6 +51,7 @@ namespace InoLibrary
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

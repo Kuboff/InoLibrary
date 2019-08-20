@@ -11,9 +11,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InoLibrary.Controllers
 {
+    //Отвечает за все действия с карточками публикаций
+    [Authorize]
     public class PublicationsController : Controller
     {
         InoLibraryDbContext _db;
@@ -32,6 +35,7 @@ namespace InoLibrary.Controllers
             }
         }
 
+        //Просмотр
         [HttpGet]
         public async Task<IActionResult> ObservePublication(string id)
         {
@@ -76,40 +80,45 @@ namespace InoLibrary.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePublication(CreatePublicationViewModel model)
         {
-            if (model != null && model.File != null)
+            if (ModelState.IsValid)
             {
-                Publication publication = new Publication
+                if (model != null && model.File != null)
                 {
-                    Name = model.Name,
-                    Annotation = model.Annotation,
-                    User = await _userManager.FindByNameAsync(User.Identity.Name),
-                    PublishingYear = model.PublishingYear,
-                    Path = model.FilePath
-                };
+                    Publication publication = new Publication
+                    {
+                        Name = model.Name,
+                        Annotation = model.Annotation,
+                        User = await _userManager.FindByNameAsync(User.Identity.Name),
+                        PublishingYear = model.PublishingYear,
+                        Path = model.FilePath,
+                        CreationTime = DateTime.Now
+                    };
 
-                _db.Publications.Add(publication);
-                await _db.SaveChangesAsync();
+                    _db.Publications.Add(publication);
+                    //await _db.SaveChangesAsync();
 
-                Category tempCat;
-                foreach(string cat in model.Categories)
-                {
-                    tempCat = _db.Categories.FirstOrDefault(c => c.Name == cat);
-                    publication.PublicationCategories.Add(new PublicationCategory { PublicationId = publication.Id, CategoryId = tempCat.Id });
+                    Category tempCat;
+                    foreach (string cat in model.Categories)
+                    {
+                        tempCat = _db.Categories.FirstOrDefault(c => c.Name == cat);
+                        publication.PublicationCategories.Add(new PublicationCategory { Publication = publication, CategoryId = tempCat.Id });
+                    }
+
+                    // путь к папке Files
+                    string path = "/Files/" + model.File.FileName;
+                    // сохраняем файл в папку Files в каталоге wwwroot
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                        publication.Path = fileStream.Name;
+                    }
+
+                    await _db.SaveChangesAsync();
+                    return RedirectToAction("ObservePublication", "Publications", new { id = publication.Id });
                 }
-
-                // путь к папке Files
-                string path = "/Files/" + model.File.FileName;
-                // сохраняем файл в папку Files в каталоге wwwroot
-                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
-                {
-                    await model.File.CopyToAsync(fileStream);
-                    publication.Path = fileStream.Name;
-                }
-
-                await _db.SaveChangesAsync();
-                return RedirectToAction("ObservePublication", "Publications", new { id = publication.Id });
+                return NotFound();
             }
-            return NotFound();
+            return View(model);
         }
 
         [HttpGet]
@@ -152,43 +161,48 @@ namespace InoLibrary.Controllers
         [HttpPost]
         public async Task<IActionResult> EditPublication(EditPublicationViewModel model)
         {
-            if (model != null)
+            if (ModelState.IsValid)
             {
-                Publication publication = await _db.Publications.Include(pub => pub.PublicationCategories).ThenInclude(pc => pc.Category).FirstOrDefaultAsync(p => p.Id == model.Id);
-                publication.Name = model.Name;
-                publication.Annotation = model.Annotation;
-                publication.PublishingYear = model.PublishingYear;
-
-                publication.PublicationCategories.RemoveRange(0, publication.PublicationCategories.Count);
-
-                Category tempCat;
-                foreach (string cat in model.Categories)
+                if (model != null)
                 {
-                    tempCat = _db.Categories.FirstOrDefault(c => c.Name == cat);
-                    publication.PublicationCategories.Add(new PublicationCategory { PublicationId = publication.Id, CategoryId = tempCat.Id });
-                }
+                    Publication publication = await _db.Publications.Include(pub => pub.PublicationCategories).ThenInclude(pc => pc.Category).FirstOrDefaultAsync(p => p.Id == model.Id);
+                    publication.Name = model.Name;
+                    publication.Annotation = model.Annotation;
+                    publication.PublishingYear = model.PublishingYear;
 
-                if (model.File != null)
-                {
-                    // путь к папке Files
-                    string newPath = "/Files/" + model.File.FileName;
-                    string oldPath = _appEnvironment.WebRootPath + model.OldFilePath;
-                    // сохраняем файл в папку Files в каталоге wwwroot
-                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + newPath, FileMode.Create))
+                    publication.PublicationCategories.RemoveRange(0, publication.PublicationCategories.Count);
+
+                    Category tempCat;
+                    foreach (string cat in model.Categories)
                     {
-                        await model.File.CopyToAsync(fileStream);
-                        publication.Path = fileStream.Name;
+                        tempCat = _db.Categories.FirstOrDefault(c => c.Name == cat);
+                        publication.PublicationCategories.Add(new PublicationCategory { PublicationId = publication.Id, CategoryId = tempCat.Id });
                     }
-                    System.IO.File.Delete(oldPath);
+
+                    if (model.File != null)
+                    {
+                        // путь к папке Files
+                        string newPath = "/Files/" + model.File.FileName;
+                        string oldPath = model.OldFilePath;
+                        // сохраняем файл в папку Files в каталоге wwwroot
+                        using (var fileStream = new FileStream(_appEnvironment.WebRootPath + newPath, FileMode.Create))
+                        {
+                            await model.File.CopyToAsync(fileStream);
+                            publication.Path = fileStream.Name;
+                        }
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    _db.SaveChanges();
+
+                    return RedirectToAction("ObservePublication", "Publications", new { id = publication.Id });
                 }
-
-                _db.SaveChanges();
-
-                return RedirectToAction("ObservePublication", "Publications", new { id = publication.Id });
+                return NotFound();
             }
-            return NotFound();
+            return View(model);
         }
 
+        //Подтверждение удаления
         [HttpGet]
         [ActionName("DeletePublication")]
         public IActionResult ConfirmDeletePublication(string id)
@@ -201,6 +215,7 @@ namespace InoLibrary.Controllers
             return NotFound();
         }
 
+        //Удаление
         [HttpPost]
         public async Task<IActionResult> DeletePublication(string id)
         {
@@ -215,12 +230,28 @@ namespace InoLibrary.Controllers
             return NotFound();
         }
 
-        public IActionResult DownloadFile(string url)
+        public PhysicalFileResult DownloadFile(string path)
         {
-            //Change to .doc
-            return PhysicalFile(url, "image/jpeg");
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLower();
+            return PhysicalFile(path, types[ext]);
+        }
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/msword"},
+                {".docx", "application/msword"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"}
+            };
         }
 
+        [Authorize]
+        //Вывод публикаций текущего пользователя
         public IActionResult MyPublications()
         {
             List<Publication> myPublications = _db.Publications.Where(p => p.User.UserName == User.Identity.Name).Include(p => p.User).ToList();
